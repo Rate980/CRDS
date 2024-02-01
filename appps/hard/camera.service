@@ -1,0 +1,11 @@
+[Unit]
+Description=camera
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/a/camera.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
