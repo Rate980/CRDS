@@ -33,13 +33,25 @@ const Admin = () => {
   const updateStatus = async (newStatus: string) => {
     if (building && floor) {
       const docRef = doc(firestore, 'statuses', building.toString(), 'floors', floor.toString());
-      await setDoc(docRef, { status: newStatus });
-      setButtonStatus(newStatus);
-
-      // ホームに戻る
-      router.push('/');
+  
+      try {
+        // 現在のデータを取得
+        const docSnap = await getDoc(docRef);
+        const existingData = docSnap?.data() || {};
+  
+        // status フィールドのみを更新し、他のプロパティはそのまま保持
+        await setDoc(docRef, { ...existingData, status: newStatus });
+  
+        // ボタンのステータスを更新
+        setButtonStatus(newStatus);
+  
+        // ホームに戻る
+        router.push('/edit');
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
     }
-  };
+  };  
 
   return (
     <div>
